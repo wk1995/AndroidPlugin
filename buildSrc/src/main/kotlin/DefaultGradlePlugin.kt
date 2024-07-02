@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 open class DefaultGradlePlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
-
+        setProjectConfig(target)
     }
 
     private fun setProjectConfig(project: Project) {
@@ -37,6 +37,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
         project.extensions.getByType<BaseAppModuleExtension>().apply {
             compileSdk = ProjectConfig.compileSdk
             defaultConfig {
+                applicationId = ProjectConfig.applicationId
                 minSdk = ProjectConfig.minSk
                 targetSdk = ProjectConfig.targetSdk
                 versionCode = ProjectConfig.versionCode
@@ -75,7 +76,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
             }
         }
         project.dependencies {
-
+            affectiveSdk()
         }
     }
 
