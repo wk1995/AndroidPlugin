@@ -9,6 +9,7 @@ object ProjectConfig {
     const val versionCode = 100
     const val versionName = "1.0.0"
     const val applicationId = "com.wk.plugin"
+    const val namespace = "com.wk.plugin"
     const val testInstrumentationRunner = "androidx.test.runner.AndroidJunitRunner"
 
 }

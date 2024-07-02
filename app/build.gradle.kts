@@ -8,7 +8,7 @@ plugins {
 apply<DefaultGradlePlugin>()
 
 android {
-    namespace = "com.wk.plugin"
+//    namespace = "com.wk.plugin"
 }
 
 dependencies {

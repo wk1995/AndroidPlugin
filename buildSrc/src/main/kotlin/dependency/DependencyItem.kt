@@ -26,13 +26,18 @@ object DependencyItem {
     const val recyclerView = "androidx.recyclerview:recyclerview:1.2.1"
 
     //材料设计
-    const val material = "com.google.android.material:material:1.11.0"
+    const val material = "com.google.android.material:material:1.12.0"
 
     //分包
     const val multidex = "androidx.multidex:multidex:2.0.1"
+    const val junit_junit = "junit:junit:4.13.2"
+    const val ext_junit = "androidx.test.ext:junit:1.1.5"
+    const val espresso_espresso_core = "androidx.test.espresso:espresso-core:3.5.1"
 
-    const val affectiveSdkOfflineFlowTime="cn.entertech.android:affective-offline-sdk-flowtime:1.2.3"
 
-    const val affectiveSdkApi="cn.entertech.android:affective_sdk_api:1.2.3"
+    const val affectiveSdkOfflineFlowTime =
+        "cn.entertech.android:affective-offline-sdk-flowtime:1.2.3"
+
+    const val affectiveSdkApi = "cn.entertech.android:affective_sdk_api:1.2.3"
 }
 

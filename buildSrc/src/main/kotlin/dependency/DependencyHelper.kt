@@ -24,3 +24,19 @@ fun DependencyHandler.affectiveSdk(configurationName: String = DEPENDENCY_TYPE_I
     add(configurationName, DependencyItem.affectiveSdkApi)
 }
 
+/**
+ * 新建module 与app 默认依赖
+ * */
+fun DependencyHandler.initDependencies() {
+    add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.coreKtx)
+    add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.appcompat)
+    add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.material)
+    add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.constraintlayout)
+    add(DependencyType.DEPENDENCY_TYPE_TEST_IMPLEMENTATION, DependencyItem.junit_junit)
+    add(DependencyType.DEPENDENCY_TYPE_ANDROID_TEST_IMPLEMENTATION, DependencyItem.ext_junit)
+    add(
+        DependencyType.DEPENDENCY_TYPE_ANDROID_TEST_IMPLEMENTATION,
+        DependencyItem.espresso_espresso_core
+    )
+}
+

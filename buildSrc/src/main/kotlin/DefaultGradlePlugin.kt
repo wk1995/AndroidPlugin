@@ -5,7 +5,9 @@ import org.gradle.api.Project
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import dependency.affectiveSdk
+import dependency.initDependencies
 import org.gradle.api.JavaVersion
+import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
@@ -36,6 +38,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
         }
         project.extensions.getByType<BaseAppModuleExtension>().apply {
             compileSdk = ProjectConfig.compileSdk
+            namespace = ProjectConfig.namespace
             defaultConfig {
                 applicationId = ProjectConfig.applicationId
                 minSdk = ProjectConfig.minSk
@@ -76,6 +79,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
             }
         }
         project.dependencies {
+            initDependencies()
             affectiveSdk()
         }
     }
@@ -106,7 +110,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
             }
         }
         project.dependencies {
-            affectiveSdk()
+            initDependencies()
         }
     }
 }
