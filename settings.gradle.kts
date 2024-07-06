@@ -1,3 +1,5 @@
+import java.io.FilenameFilter
+
 pluginManagement {
     repositories {
         mavenLocal()
@@ -16,6 +18,14 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MyPlugin"
-include(":app")
-include(":slowMethod")
-//include(":android_plugin_publish")
+//include(":app")
+val filter =
+    FilenameFilter { _, name ->
+        name?.endsWith(".gradle") ?: false || name?.endsWith(".gradle.kts") ?: false
+    }
+rootDir.listFiles()?.forEach {
+    if (it.isDirectory && it.name != "buildSrc" && it.listFiles(filter)?.isNotEmpty() == true) {
+        include(it.name)
+    }
+}
+
