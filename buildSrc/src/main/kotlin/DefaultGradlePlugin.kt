@@ -36,27 +36,33 @@ open class DefaultGradlePlugin : Plugin<Project> {
             plugin("kotlin-kapt")
             plugin("org.jetbrains.kotlin.android")
         }
+        val projectConfigInfo = try {
+            project.extensions.getByType(ProjectConfigInfo::class.java)
+        } catch (e: Exception) {
+            PluginLogUtil.printlnErrorInScreen("getByType ProjectConfigInfo error ${e.message}")
+            ProjectConfigInfo()
+        }
+        PluginLogUtil.printlnDebugInScreen("projectConfigInfo: $projectConfigInfo")
         project.extensions.getByType<BaseAppModuleExtension>().apply {
-            compileSdk = ProjectConfig.compileSdk
-            namespace = ProjectConfig.namespace
+            compileSdk = projectConfigInfo.compileSdk
+            namespace = projectConfigInfo.namespace
             defaultConfig {
-                applicationId = ProjectConfig.applicationId
-                minSdk = ProjectConfig.minSk
-                targetSdk = ProjectConfig.targetSdk
-                versionCode = ProjectConfig.versionCode
-                versionName = ProjectConfig.versionName
-                testInstrumentationRunner = ProjectConfig.testInstrumentationRunner
-
+                applicationId = projectConfigInfo.applicationId
+                minSdk = projectConfigInfo.minSk
+                targetSdk = projectConfigInfo.targetSdk
+                versionCode = projectConfigInfo.versionCode
+                versionName = projectConfigInfo.versionName
+                testInstrumentationRunner = projectConfigInfo.testInstrumentationRunner
             }
             compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_17
-                targetCompatibility = JavaVersion.VERSION_17
+                sourceCompatibility = projectConfigInfo.javeVersion
+                targetCompatibility = projectConfigInfo.javeVersion
             }
             //kotlinOptions
             (this as? ExtensionAware)?.extensions?.configure<KotlinJvmOptions>(
                 "kotlinOptions"
             ) {
-                jvmTarget = "17"
+                jvmTarget = projectConfigInfo.getJavaTarget()
             }
             buildTypes {
                 release {
@@ -91,22 +97,27 @@ open class DefaultGradlePlugin : Plugin<Project> {
             plugin("kotlin-kapt")
             plugin("org.jetbrains.kotlin.android")
         }
+        val projectConfigInfo = try {
+            project.extensions.getByType(ProjectConfigInfo::class.java)
+        } catch (e: Exception) {
+            ProjectConfigInfo()
+        }
         project.extensions.getByType(LibraryExtension::class.java).apply {
-            compileSdk = ProjectConfig.compileSdk
+            compileSdk = projectConfigInfo.compileSdk
             defaultConfig {
-                minSdk = ProjectConfig.minSk
-                testInstrumentationRunner = ProjectConfig.testInstrumentationRunner
+                minSdk = projectConfigInfo.minSk
+                testInstrumentationRunner = projectConfigInfo.testInstrumentationRunner
 
             }
             compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_17
-                targetCompatibility = JavaVersion.VERSION_17
+                sourceCompatibility = projectConfigInfo.javeVersion
+                targetCompatibility = projectConfigInfo.javeVersion
             }
             //kotlinOptions
             (this as? ExtensionAware)?.extensions?.configure<KotlinJvmOptions>(
                 "kotlinOptions"
             ) {
-                jvmTarget = "17"
+                jvmTarget = projectConfigInfo.getJavaTarget()
             }
         }
         project.dependencies {
