@@ -1,15 +1,15 @@
+System.out.println("build.gradle.kts")
 plugins {
     `kotlin-dsl`
     id("android.plugin.baseBuild")
 }
-gradleConfig {
-    publishInfo {
-        groupId = "custom.android.plugin"
-        artifactId = "monitor-slowMethod"
-        version = "0.0.4"
-        pluginId = "plugin.android.monitor.slow.method"
-        implementationClass = "custom.android.plugin.SlowMethodMonitorPlugin"
-    }
+System.out.println("build.gradle.kts gradleConfig" )
+PublishInfo {
+    groupId = "custom.android.plugin"
+    artifactId = "monitor-slowMethod"
+    version = "0.0.4"
+    pluginId = "plugin.android.monitor.slow.method"
+    implementationClass = "custom.android.plugin.SlowMethodMonitorPlugin"
 }
 
 /*PublishInfo {
