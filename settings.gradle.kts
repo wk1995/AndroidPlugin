@@ -18,14 +18,19 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MyPlugin"
-//include(":app")
-val filter =
-    FilenameFilter { _, name ->
-        name?.endsWith(".gradle") ?: false || name?.endsWith(".gradle.kts") ?: false
-    }
-rootDir.listFiles()?.forEach {
-    if (it.isDirectory && it.name != "buildSrc" && it.listFiles(filter)?.isNotEmpty() == true) {
-        include(it.name)
+val isFirst = false
+if (isFirst) {
+    include(":android_plugin_base")
+} else {
+    val filter =
+        FilenameFilter { _, name ->
+            name?.endsWith(".gradle") ?: false || name?.endsWith(".gradle.kts") ?: false
+        }
+    rootDir.listFiles()?.forEach {
+        if (it.isDirectory && it.name != "buildSrc" && it.listFiles(filter)?.isNotEmpty() == true) {
+            include(it.name)
+        }
     }
 }
+
 
