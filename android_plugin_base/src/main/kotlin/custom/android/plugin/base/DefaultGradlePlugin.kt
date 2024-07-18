@@ -137,7 +137,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
                 this.add(DependencyType.DEPENDENCY_TYPE_IMPLEMENTATION, localGroovy())
             }
         }
-
+        PublishOperate.apply(project)
     }
 
 }
