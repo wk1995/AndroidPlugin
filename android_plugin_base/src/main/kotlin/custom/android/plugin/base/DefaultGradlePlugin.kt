@@ -20,20 +20,20 @@ open class DefaultGradlePlugin : Plugin<Project> {
         setProjectConfig(target)
     }
 
-    private fun supportAppModule(container: PluginContainer): Boolean {
+    private fun isApp(container: PluginContainer): Boolean {
         return container.hasPlugin("com.android.application")
     }
 
-    private fun supportPluginModule(container: PluginContainer): Boolean {
+    private fun isPlugin(container: PluginContainer): Boolean {
         return container.hasPlugin("org.gradle.kotlin.kotlin-dsl")
                 || container.hasPlugin("groovy")
     }
 
-    private fun supportLibraryModule(container: PluginContainer) =
+    private fun isLibrary(container: PluginContainer) =
         container.hasPlugin("com.android.library")
 
     private fun setProjectConfig(project: Project) {
-        if (supportAppModule(project.plugins)) {
+        if (isApp(project.plugins)) {
             PluginLogUtil.printlnDebugInScreen("this is app")
             setProjectConfigByApp(project)
         } else {
@@ -78,12 +78,14 @@ open class DefaultGradlePlugin : Plugin<Project> {
                             getDefaultProguardFile("proguard-android-optimize.txt"),
                             "proguard-rules.pro"
                         )
+                        signingConfig = signingConfigs.findByName("release")
                     }
                     debug {
                         isDebuggable = true
                         isMinifyEnabled = false
                         isShrinkResources = false
                         isJniDebuggable = true
+                        signingConfig = signingConfigs.findByName("debug")
                     }
 
                 }
@@ -97,7 +99,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
     private fun setProjectConfigByLibrary(
         project: Project,
     ) {
-        if (supportLibraryModule(project.plugins)) {
+        if (isLibrary(project.plugins)) {
             PluginLogUtil.printlnDebugInScreen("is library")
             project.apply {
                 plugin("kotlin-android")
@@ -128,7 +130,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
             }
         }
 
-        if (supportPluginModule(project.plugins)) {
+        if (isPlugin(project.plugins)) {
             PluginLogUtil.printlnDebugInScreen("is plugin")
             project.dependencies {
                 //gradle sdk
