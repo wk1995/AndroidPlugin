@@ -1,5 +1,6 @@
 package custom.android.plugin.push
 
+import custom.android.plugin.base.ProjectHelper
 import custom.android.plugin.log.PluginLogUtil
 import org.gradle.api.DefaultTask
 import org.gradle.api.publish.PublishingExtension
@@ -107,17 +108,19 @@ abstract class BasePublishTask : DefaultTask() {
                         pathSb.append(it)
                         pathSb.append(File.separatorChar)
                     }
-//                    pathSb.append(artifactId)
-//                    pathSb.append(File.separatorChar)
+
                     PluginLogUtil.printlnInfoInScreen("构建成功")
                     PluginLogUtil.printlnInfoInScreen("仓库地址：  $pathSb")
                     PluginLogUtil.printlnInfoInScreen("===================================================================")
                     PluginLogUtil.printlnInfoInScreen("")
-                    PluginLogUtil.printlnInfoInScreen("implementation '$groupId:$artifactId:$version'")
-                    PluginLogUtil.printlnInfoInScreen("")
-                    PluginLogUtil.printlnInfoInScreen("==================================================================")
-                    PluginLogUtil.printlnInfoInScreen("")
-                    PluginLogUtil.printlnInfoInScreen("implementation (\"$groupId:$artifactId:$version\")")
+                    if (ProjectHelper.isLibrary(project.plugins)) {
+                        PluginLogUtil.printlnInfoInScreen("implementation (\"$groupId:$artifactId:$version\")")
+                    } else {
+                        PluginLogUtil.printlnInfoInScreen("classpath (\"$groupId:$artifactId:$version\")")
+                        PluginLogUtil.printlnInfoInScreen("")
+                        PluginLogUtil.printlnInfoInScreen("id(\"${publishInfo.pluginId}\")")
+                    }
+
                     PluginLogUtil.printlnInfoInScreen("")
                     PluginLogUtil.printlnInfoInScreen("==================================================================")
                     //提示成功信息
@@ -153,5 +156,5 @@ abstract class BasePublishTask : DefaultTask() {
         return true
     }
 
-    abstract fun fetchTaskName():String
+    abstract fun fetchTaskName(): String
 }
