@@ -18,8 +18,14 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MyPlugin"
-val isFirst = true
-if (isFirst) {
+
+//本地是否插件
+val hasBasePlugin: Boolean = true
+val map: HashMap<String, String> = HashMap(gradle.startParameter.projectProperties)
+map["hasBasePlugin"] = hasBasePlugin.toString()
+gradle.startParameter.projectProperties = map
+println("projectProperties: ${gradle.startParameter.projectProperties}")
+if (!hasBasePlugin) {
     include(":android_plugin_base")
 } else {
     val filter =
