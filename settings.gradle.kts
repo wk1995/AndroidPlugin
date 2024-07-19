@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MyPlugin"
-val isFirst = false
+val isFirst = true
 if (isFirst) {
     include(":android_plugin_base")
 } else {
