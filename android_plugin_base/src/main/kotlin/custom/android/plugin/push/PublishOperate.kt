@@ -1,6 +1,7 @@
 package custom.android.plugin.push
 
 import com.android.build.gradle.LibraryExtension
+import custom.android.plugin.base.ModuleType
 import custom.android.plugin.log.PluginLogUtil
 import custom.android.plugin.push.BasePublishTask.Companion.MAVEN_PUBLICATION_NAME
 import org.gradle.api.Project
@@ -9,38 +10,21 @@ import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
-import org.gradle.api.tasks.TaskContainer
 import org.gradle.jvm.tasks.Jar
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import java.net.URI
 
-/**
- * 执行publishToMavenLocal
- * */
+
 object PublishOperate {
     private const val TAG = "PublishOperate"
 
-    private fun supportAppModule(container: PluginContainer): Boolean {
-        return container.hasPlugin("com.android.application")
-    }
-
-    private fun supportPluginModule(container: PluginContainer): Boolean {
-        return container.hasPlugin("org.gradle.kotlin.kotlin-dsl")
-                || container.hasPlugin("groovy")
-    }
-
-    private fun supportLibraryModule(container: PluginContainer) =
-        container.hasPlugin("com.android.library")
-
-
-    fun apply(project: Project) {
-        // 应用Gradle官方的Maven插件
-        val container = project.plugins
-        if (supportAppModule(container)) {
+    fun configPublish(project: Project, type: Int) {
+        // use Gradle Maven plugins
+        if (type == ModuleType.APP) {
             PluginLogUtil.printlnDebugInScreen("$TAG is app")
             return
         }
-        container.apply(MavenPublishPlugin::class.java)
+        project.plugins.apply(MavenPublishPlugin::class.java)
         project.extensions.create(
             PublishInfoExtension.EXTENSION_PUBLISH_INFO_NAME, PublishInfoExtension::class.java,
         )
@@ -50,7 +34,7 @@ object PublishOperate {
                 val publishing = project.extensions.getByType(PublishingExtension::class.java)
                 components.forEach {
                     PluginLogUtil.printlnDebugInScreen("$TAG name: ${it.name}")
-                    if (supportPluginModule(container)) {
+                    if (type == ModuleType.PLUGIN) {
                         if (it.name == "java") {
                             val gradlePluginDevelopmentExtension =
                                 project.extensions.getByType(GradlePluginDevelopmentExtension::class.java)
@@ -66,7 +50,7 @@ object PublishOperate {
                             publishing(project, publishing, publishInfo, it)
                         }
                     }
-                    if (supportLibraryModule(container)) {
+                    if (type == ModuleType.LIBRARY) {
                         if (it.name == "release") {
                             //注册上传task
                             publishing(project, publishing, publishInfo, it)
@@ -96,13 +80,6 @@ object PublishOperate {
                 )
             }
         }
-    }
-
-    private fun registerTask(container: TaskContainer, task: BasePublishTask) {
-        container.register(
-            task.fetchTaskName(),
-            task::class.java
-        )
     }
 
     private fun publishing(
