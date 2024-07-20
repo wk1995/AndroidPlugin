@@ -4,6 +4,11 @@ plugins {
     `kotlin-dsl`
     id("android.plugin.baseBuild")
 }
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
 PublishInfo {
     groupId = "custom.android.plugin"
     artifactId = "picture"
@@ -15,6 +20,7 @@ dependencies {
     implementation(DependencyItem.android_build_gradle)
     implementation(DependencyItem.kotlin_gradle_plugin)
     implementation(DependencyItem.kotlin_coroutines_core)
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.1")
     implementation("custom.android.plugin:baseBuild:latest.release")
     implementation("com.tinify:tinify:latest.release")
 }
