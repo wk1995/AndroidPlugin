@@ -15,5 +15,6 @@ dependencies {
     implementation(DependencyItem.android_build_gradle)
     implementation(DependencyItem.kotlin_gradle_plugin)
     implementation(DependencyItem.kotlin_coroutines_core)
+    implementation("custom.android.plugin:baseBuild:latest.release")
     implementation("com.tinify:tinify:latest.release")
 }

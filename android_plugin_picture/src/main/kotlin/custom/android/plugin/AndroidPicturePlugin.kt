@@ -6,7 +6,7 @@ import org.gradle.api.Project
 open class AndroidPicturePlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        println("AndroidPicturePlugin apply")
+        PicturePluginLogUtil.printlnDebugInScreen("AndroidPicturePlugin apply")
         project.extensions.create(
             CompressImageInfoExtension.COMPRESS_IMAGE_INFO, CompressImageInfoExtension::class.java,
         )

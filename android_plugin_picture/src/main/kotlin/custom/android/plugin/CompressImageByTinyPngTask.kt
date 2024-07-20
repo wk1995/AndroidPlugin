@@ -22,7 +22,7 @@ open class CompressImageByTinyPngTask : DefaultTask() {
     fun doTask() {
         val properties = Properties()// local.properties file in the root director
         properties.load(project.rootProject.file("local.properties").inputStream())
-        PluginLogUtil.printlnDebugInScreen("properties: $properties")
+        PicturePluginLogUtil.printlnDebugInScreen("properties: $properties")
         var tinyPngApiKey = properties.getProperty("tinyPngApiKey", "")
         val compressImageInfo =
             project.extensions.findByType(CompressImageInfoExtension::class.java)
@@ -32,7 +32,7 @@ open class CompressImageByTinyPngTask : DefaultTask() {
             tinyPngApiKey = compressImageInfo.toolsKey
         }
         if (tinyPngApiKey.isEmpty()) {
-            PluginLogUtil.printlnErrorInScreen(
+            PicturePluginLogUtil.printlnErrorInScreen(
                 "tinyPngApiKey is empty. " +
                         "Please set the \'tinyPngApiKey\' value in the \"local. properties\" file of the rootProject " +
                         "or define the CompressImageInfo \' toolsKey\' in the module gradle. " +
@@ -43,14 +43,14 @@ open class CompressImageByTinyPngTask : DefaultTask() {
         Tinify.setKey(tinyPngApiKey)
         var imagePaths = compressImageInfo.resSrcs
         if (imagePaths.isEmpty()) {
-            PluginLogUtil.printlnDebugInScreen("use default image src : \"./src/main/res\" ")
+            PicturePluginLogUtil.printlnDebugInScreen("use default image src : \"./src/main/res\" ")
             imagePaths = listOf("./src/main/res")
         }
         val startTime = System.currentTimeMillis()
-        PluginLogUtil.printlnDebugInScreen("start compress: $startTime ")
+        PicturePluginLogUtil.printlnDebugInScreen("start compress: $startTime ")
         imagePaths.forEach { resPath ->
             val res = project.file(resPath)
-            PluginLogUtil.printlnDebugInScreen("res path: ${res.absolutePath}")
+            PicturePluginLogUtil.printlnDebugInScreen("res path: ${res.absolutePath}")
             res.listFiles()?.forEach { drawableFolder ->
                 //is drawable folder
                 if (drawableFolder.isDirectory && drawableFolder.name.startsWith("drawable")) {
@@ -66,7 +66,7 @@ open class CompressImageByTinyPngTask : DefaultTask() {
                                 tempFolder?.apply {
                                     mkdirs()
                                     val pre = pic.length()
-                                    PluginLogUtil.printlnDebugInScreen("compress before size $pre")
+                                    PicturePluginLogUtil.printlnDebugInScreen("compress before size $pre")
                                     val source: Source = Tinify.fromFile(pic.absolutePath)
                                     val tempPic = File(this, pic.name)
                                     source.toFile(tempPic.absolutePath)
@@ -74,22 +74,22 @@ open class CompressImageByTinyPngTask : DefaultTask() {
                                     pic.delete()
                                     tempPic.renameTo(pic)
                                     val compressRate = (pre - tempLength) * 1f / pre
-                                    PluginLogUtil.printlnDebugInScreen("picture $picName compress after size $tempLength  compressRate ${compressRate * 100}%")
+                                    PicturePluginLogUtil.printlnDebugInScreen("picture $picName compress after size $tempLength  compressRate ${compressRate * 100}%")
                                 }
 
                             }
                         } ?: kotlin.run {
-                            PluginLogUtil.printlnInfoInScreen("${drawableFolder.name} folder do not have target picture")
+                            PicturePluginLogUtil.printlnInfoInScreen("${drawableFolder.name} folder do not have target picture")
                         }
                         tempFolder?.delete()
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        PluginLogUtil.printlnErrorInScreen("PicConvertToWebp error : ${e.message}")
+                        PicturePluginLogUtil.printlnErrorInScreen("PicConvertToWebp error : ${e.message}")
                     }
                 }
             }
         }
-        PluginLogUtil.printlnDebugInScreen("compress time consuming ${System.currentTimeMillis() - startTime}ms ")
+        PicturePluginLogUtil.printlnDebugInScreen("compress time consuming ${System.currentTimeMillis() - startTime}ms ")
 
         /*  val applicationAndroid = project.extensions.findByType(BaseAppModuleExtension::class.java)
                   val libraryAndroid = project.extensions.findByType(LibraryExtension::class.java)
