@@ -2,7 +2,9 @@ package custom.android.plugin
 
 import com.tinify.Source
 import com.tinify.Tinify
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -62,10 +64,11 @@ open class CompressImageByTinyPngTask : DefaultTask() {
                     ) {
                         try {
                             //create temp folder
+                            val deferredList: MutableList<Deferred<*>> = ArrayList()
                             val tempFolder = File(drawableFolder, "temp")
                             tempFolder.mkdirs()
                             drawableFolder.listFiles()?.forEach { pic ->
-                                val result = async {
+                                deferredList.add(async {
                                     val picName = pic.name
                                     if (picName.endsWith("jpg") || picName.endsWith("png") ||
                                         picName.endsWith("webp") || picName.endsWith("jpeg")
@@ -84,11 +87,12 @@ open class CompressImageByTinyPngTask : DefaultTask() {
                                         }
 
                                     }
-                                }
-                                result.await()
+                                })
+
                             } ?: kotlin.run {
                                 PicturePluginLogUtil.printlnInfoInScreen("${drawableFolder.name} folder do not have target picture")
                             }
+                            deferredList.awaitAll()
                             tempFolder.delete()
                         } catch (e: Exception) {
                             e.printStackTrace()
