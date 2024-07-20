@@ -80,6 +80,7 @@ object DependencyItem {
 
     const val android_build_gradle = "com.android.tools.build:gradle:8.1.3"
     const val kotlin_gradle_plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"
+    const val kotlin_coroutines_core = "org.jetbrains.kotlin:kotlinx-coroutines-core:1.8.1"
 
 
 }
