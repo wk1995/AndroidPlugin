@@ -1,7 +1,6 @@
 package custom.android.plugin
 
 import com.android.build.api.dsl.LibraryExtension
-import com.android.build.gradle.api.AndroidSourceDirectorySet
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import com.tinify.Source
 import com.tinify.Tinify
@@ -30,23 +29,32 @@ open class PicConvertToWebpTask : DefaultTask() {
         }
         val res = project.file("./src/main/res")
         PluginLogUtil.printlnDebugInScreen("res path: ${res.absolutePath}")
+        Tinify.setKey("xxxx")
         res.listFiles()?.forEach {
             if (it.isDirectory && it.name.startsWith("drawable")) {
                 //drawable folder
-                it.listFiles()?.forEach { pic ->
-                    val picName = pic.name
-                    if (picName.endsWith("jpg") || picName.endsWith("png") ||
-                        picName.endsWith("webp") || picName.endsWith("jpeg")
-                    ) {
-                        //create temp folder
-                        val tempFolder = File(it, "temp")
-                        tempFolder.mkdirs()
-                        val source: Source = Tinify.fromFile(pic.absolutePath)
-                        val tempPic = File(tempFolder, pic.name)
-                        source.toFile(tempPic.absolutePath)
+                try {
+                    it.listFiles()?.forEach { pic ->
+                        val picName = pic.name
+                        if (picName.endsWith("jpg") || picName.endsWith("png") ||
+                            picName.endsWith("webp") || picName.endsWith("jpeg")
+                        ) {
+                            //create temp folder
+                            val tempFolder = File(it, "temp")
+                            tempFolder.mkdirs()
+                            val source: Source = Tinify.fromFile(pic.absolutePath)
+                            val tempPic = File(tempFolder, pic.name)
+                            source.toFile(tempPic.absolutePath)
+                            pic.delete()
+                            tempPic.renameTo(pic)
+
+                        }
+                    } ?: kotlin.run {
+                        PluginLogUtil.printlnInfoInScreen("${it.name} folder do not have target picture")
                     }
-                } ?: kotlin.run {
-                    PluginLogUtil.printlnInfoInScreen("${it.name} folder do not have target picture")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    PluginLogUtil.printlnErrorInScreen("PicConvertToWebp error : ${e.message}")
                 }
             }
         }
