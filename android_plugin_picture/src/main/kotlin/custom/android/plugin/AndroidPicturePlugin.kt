@@ -7,13 +7,15 @@ open class AndroidPicturePlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         println("AndroidPicturePlugin apply")
-
+        project.extensions.create(
+            CompressImageInfoExtension.COMPRESS_IMAGE_INFO, CompressImageInfoExtension::class.java,
+        )
         val currProjectName = project.displayName
         project.gradle.afterProject {
             if (currProjectName == displayName) {
                 project.tasks.register(
-                    PicConvertToWebpTask.TAG,
-                    PicConvertToWebpTask::class.java
+                    CompressImageByTinyPngTask.TAG,
+                    CompressImageByTinyPngTask::class.java
                 )
             }
         }

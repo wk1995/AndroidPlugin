@@ -14,4 +14,5 @@ PublishInfo {
 dependencies {
     implementation(DependencyItem.android_build_gradle)
     implementation(DependencyItem.kotlin_gradle_plugin)
+    implementation("com.tinify:tinify:latest.release")
 }
