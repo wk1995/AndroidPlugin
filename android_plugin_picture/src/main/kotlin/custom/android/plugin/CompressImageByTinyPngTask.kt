@@ -46,6 +46,8 @@ open class CompressImageByTinyPngTask : DefaultTask() {
             PluginLogUtil.printlnDebugInScreen("use default image src : \"./src/main/res\" ")
             imagePaths = listOf("./src/main/res")
         }
+        val startTime = System.currentTimeMillis()
+        PluginLogUtil.printlnDebugInScreen("start compress: $startTime ")
         imagePaths.forEach { resPath ->
             val res = project.file(resPath)
             PluginLogUtil.printlnDebugInScreen("res path: ${res.absolutePath}")
@@ -63,11 +65,16 @@ open class CompressImageByTinyPngTask : DefaultTask() {
                                 tempFolder = File(drawableFolder, "temp")
                                 tempFolder?.apply {
                                     mkdirs()
+                                    val pre = pic.length()
+                                    PluginLogUtil.printlnDebugInScreen("compress before size $pre")
                                     val source: Source = Tinify.fromFile(pic.absolutePath)
                                     val tempPic = File(this, pic.name)
                                     source.toFile(tempPic.absolutePath)
+                                    val tempLength = tempPic.length()
                                     pic.delete()
                                     tempPic.renameTo(pic)
+                                    val compressRate = (pre - tempLength) * 1f / pre
+                                    PluginLogUtil.printlnDebugInScreen("picture $picName compress after size $tempLength  compressRate ${compressRate * 100}%")
                                 }
 
                             }
@@ -82,7 +89,7 @@ open class CompressImageByTinyPngTask : DefaultTask() {
                 }
             }
         }
-
+        PluginLogUtil.printlnDebugInScreen("compress time consuming ${System.currentTimeMillis() - startTime}ms ")
 
         /*  val applicationAndroid = project.extensions.findByType(BaseAppModuleExtension::class.java)
                   val libraryAndroid = project.extensions.findByType(LibraryExtension::class.java)
