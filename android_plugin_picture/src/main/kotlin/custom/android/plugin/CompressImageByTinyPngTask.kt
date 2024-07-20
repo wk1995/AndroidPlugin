@@ -53,7 +53,10 @@ open class CompressImageByTinyPngTask : DefaultTask() {
             PicturePluginLogUtil.printlnDebugInScreen("res path: ${res.absolutePath}")
             res.listFiles()?.forEach { drawableFolder ->
                 //is drawable folder
-                if (drawableFolder.isDirectory && drawableFolder.name.startsWith("drawable")) {
+                if (drawableFolder.isDirectory &&
+                    (drawableFolder.name.startsWith("drawable")
+                            || drawableFolder.name == "raw" || drawableFolder.name == "assets")
+                ) {
                     try {
                         var tempFolder: File? = null
                         drawableFolder.listFiles()?.forEach { pic ->
