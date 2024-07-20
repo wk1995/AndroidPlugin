@@ -2,6 +2,8 @@ package custom.android.plugin
 
 import com.tinify.Source
 import com.tinify.Tinify
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -44,50 +46,54 @@ open class CompressImageByTinyPngTask : DefaultTask() {
         var imagePaths = compressImageInfo.resSrcs
         if (imagePaths.isEmpty()) {
             PicturePluginLogUtil.printlnDebugInScreen("use default image src : \"./src/main/res\" ")
-            imagePaths = listOf("./src/main/res")
+            imagePaths = mutableListOf("./src/main/res")
         }
         val startTime = System.currentTimeMillis()
         PicturePluginLogUtil.printlnDebugInScreen("start compress: $startTime ")
-        imagePaths.forEach { resPath ->
-            val res = project.file(resPath)
-            PicturePluginLogUtil.printlnDebugInScreen("res path: ${res.absolutePath}")
-            res.listFiles()?.forEach { drawableFolder ->
-                //is drawable folder
-                if (drawableFolder.isDirectory &&
-                    (drawableFolder.name.startsWith("drawable")
-                            || drawableFolder.name == "raw" || drawableFolder.name == "assets")
-                ) {
-                    try {
-                        var tempFolder: File? = null
-                        drawableFolder.listFiles()?.forEach { pic ->
-                            val picName = pic.name
-                            if (picName.endsWith("jpg") || picName.endsWith("png") ||
-                                picName.endsWith("webp") || picName.endsWith("jpeg")
-                            ) {
-                                //create temp folder
-                                tempFolder = File(drawableFolder, "temp")
-                                tempFolder?.apply {
-                                    mkdirs()
-                                    val pre = pic.length()
-                                    PicturePluginLogUtil.printlnDebugInScreen("compress before size $pre")
-                                    val source: Source = Tinify.fromFile(pic.absolutePath)
-                                    val tempPic = File(this, pic.name)
-                                    source.toFile(tempPic.absolutePath)
-                                    val tempLength = tempPic.length()
-                                    pic.delete()
-                                    tempPic.renameTo(pic)
-                                    val compressRate = (pre - tempLength) * 1f / pre
-                                    PicturePluginLogUtil.printlnDebugInScreen("picture $picName compress after size $tempLength  compressRate ${compressRate * 100}%")
-                                }
+        runBlocking {
+            imagePaths.forEach { resPath ->
+                val res = project.file(resPath)
+                PicturePluginLogUtil.printlnDebugInScreen("res path: ${res.absolutePath}")
+                res.listFiles()?.forEach { drawableFolder ->
+                    //is drawable folder
+                    if (drawableFolder.isDirectory &&
+                        (drawableFolder.name.startsWith("drawable")
+                                || drawableFolder.name == "raw" || drawableFolder.name == "assets")
+                    ) {
+                        try {
+                            //create temp folder
+                            val tempFolder = File(drawableFolder, "temp")
+                            tempFolder.mkdirs()
+                            drawableFolder.listFiles()?.forEach { pic ->
+                                val result = async {
+                                    val picName = pic.name
+                                    if (picName.endsWith("jpg") || picName.endsWith("png") ||
+                                        picName.endsWith("webp") || picName.endsWith("jpeg")
+                                    ) {
+                                        tempFolder.apply {
+                                            val pre = pic.length()
+                                            PicturePluginLogUtil.printlnDebugInScreen("compress before size $pre")
+                                            val source: Source = Tinify.fromFile(pic.absolutePath)
+                                            val tempPic = File(this, pic.name)
+                                            source.toFile(tempPic.absolutePath)
+                                            val tempLength = tempPic.length()
+                                            pic.delete()
+                                            tempPic.renameTo(pic)
+                                            val compressRate = (pre - tempLength) * 1f / pre
+                                            PicturePluginLogUtil.printlnDebugInScreen("picture $picName compress after size $tempLength  compressRate ${compressRate * 100}%")
+                                        }
 
+                                    }
+                                }
+                                result.await()
+                            } ?: kotlin.run {
+                                PicturePluginLogUtil.printlnInfoInScreen("${drawableFolder.name} folder do not have target picture")
                             }
-                        } ?: kotlin.run {
-                            PicturePluginLogUtil.printlnInfoInScreen("${drawableFolder.name} folder do not have target picture")
+                            tempFolder.delete()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            PicturePluginLogUtil.printlnErrorInScreen("PicConvertToWebp error : ${e.message}")
                         }
-                        tempFolder?.delete()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        PicturePluginLogUtil.printlnErrorInScreen("PicConvertToWebp error : ${e.message}")
                     }
                 }
             }
