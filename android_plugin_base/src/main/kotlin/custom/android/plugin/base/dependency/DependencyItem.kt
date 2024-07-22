@@ -72,6 +72,7 @@ object DependencyItem {
 
 
     const val gson = "com.google.code.gson:gson:2.8.5"
+
     const val lifecycle_viewmodel_ktx = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
     const val lifecycle_runtime_ktx = "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
 
@@ -80,8 +81,11 @@ object DependencyItem {
 
     const val android_build_gradle = "com.android.tools.build:gradle:8.1.3"
     const val kotlin_gradle_plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"
-    const val kotlin_coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1"
+    const val kotlinx_coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1"
+    const val kotlinx_coroutines_android = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
 
+    const val auto_service="com.google.auto.service:auto-service:1.0-rc6"
 
+    const val java_websocket="org.java-websocket:Java-WebSocket:1.4.0"
 }
 

@@ -66,6 +66,12 @@ fun DependencyHandler.lint() {
     }
 }
 
+fun DependencyHandler.autoService(){
+    add(DEPENDENCY_TYPE_KAPT, DependencyItem.auto_service)
+    add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.auto_service)
+}
+
+
 
 private fun DependencyHandler.dependency(
     dependencies: List<String>, exclude: (String, String, String) -> Unit
