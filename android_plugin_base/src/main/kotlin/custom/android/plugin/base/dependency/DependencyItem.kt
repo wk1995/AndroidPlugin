@@ -84,8 +84,22 @@ object DependencyItem {
     const val kotlinx_coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1"
     const val kotlinx_coroutines_android = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
 
-    const val auto_service="com.google.auto.service:auto-service:1.0-rc6"
+    const val auto_service = "com.google.auto.service:auto-service:1.0-rc6"
 
-    const val java_websocket="org.java-websocket:Java-WebSocket:1.4.0"
+    const val java_websocket = "org.java-websocket:Java-WebSocket:1.4.0"
+    const val lifecycle_process = "androidx.lifecycle:lifecycle-process:2.7.0"
+    const val facebook_android_sdk = "com.facebook.android:facebook-android-sdk:15.1.0"
+    const val glide = "com.github.bumptech.glide:glide:4.16.0"
+    const val lottie = "com.airbnb.android:lottie:4.2.0"
+    const val firebase_core = "com.google.firebase:firebase-core:20.1.2"
+    const val firebase_config = "com.google.firebase:firebase-config:21.0.2"
+    const val firebase_messaging = "com.google.firebase:firebase-messaging:23.0.6"
+    const val firebase_analytics = "com.google.firebase:firebase-analytics:20.1.2"
+    const val google_play_services_auth = "com.google.android.gms:play-services-auth:20.1.0"
+    const val leakcanary_android = "com.squareup.leakcanary:leakcanary-android:2.9.1"
+    const val MPAndroidChart = "com.github.PhilJay:MPAndroidChart:v3.1.0"
+    const val webkit = "androidx.webkit:webkit:1.2.0-alpha01"
+
+
 }
 
