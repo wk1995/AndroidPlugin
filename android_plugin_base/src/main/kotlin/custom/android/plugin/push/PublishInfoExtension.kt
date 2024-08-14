@@ -6,7 +6,7 @@ open class PublishInfoExtension() {
         const val EXTENSION_PUBLISH_INFO_NAME = "PublishInfo"
     }
 
-    constructor(groupId: String, artifactId: String, version: String):this() {
+    constructor(groupId: String, artifactId: String, version: String) : this() {
         this.groupId = groupId
         this.artifactId = artifactId
         this.version = version
@@ -18,7 +18,7 @@ open class PublishInfoExtension() {
         version: String,
         pluginId: String,
         implementationClass: String
-    ):this() {
+    ) : this() {
         this.groupId = groupId
         this.artifactId = artifactId
         this.version = version
@@ -46,8 +46,16 @@ open class PublishInfoExtension() {
 
     var implementationClass = ""
 
-    var publishUrl: String = ""
 
-    var publishUserName: String = ""
-    var publishPassword: String = ""
+    open fun getPublishUrl(): String {
+        return ""
+    }
+
+    open fun getPublishUserName(): String {
+        return ""
+    }
+
+    open fun getPublishPassword(): String {
+        return ""
+    }
 }

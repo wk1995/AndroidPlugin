@@ -18,7 +18,7 @@ import java.net.URI
 object PublishOperate {
     private const val TAG = "PublishOperate"
 
-    fun configPublish(project: Project, type: Int) {
+    fun <T : PublishInfoExtension> configPublish(project: Project, type: Int, clazz: Class<T>) {
         // use Gradle Maven plugins
         if (type == ModuleType.APP) {
             PluginLogUtil.printlnDebugInScreen("$TAG is app")
@@ -26,11 +26,11 @@ object PublishOperate {
         }
         project.plugins.apply(MavenPublishPlugin::class.java)
         project.extensions.create(
-            PublishInfoExtension.EXTENSION_PUBLISH_INFO_NAME, PublishInfoExtension::class.java,
+            PublishInfoExtension.EXTENSION_PUBLISH_INFO_NAME, clazz,
         )
         project.afterEvaluate {
             try {
-                val publishInfo = project.extensions.getByType(PublishInfoExtension::class.java)
+                val publishInfo = project.extensions.getByType(clazz)
                 val publishing = project.extensions.getByType(PublishingExtension::class.java)
                 components.forEach {
                     PluginLogUtil.printlnDebugInScreen("$TAG name: ${it.name}")
@@ -82,10 +82,10 @@ object PublishOperate {
         }
     }
 
-    private fun publishing(
+    private fun <T : PublishInfoExtension> publishing(
         project: Project,
         publishing: PublishingExtension,
-        publishInfo: PublishInfoExtension,
+        publishInfo: T,
         softwareComponent: SoftwareComponent
     ) {
         publishing.publications {
@@ -119,16 +119,17 @@ object PublishOperate {
                 from(softwareComponent)
             }
         }
-        val publishUrl = publishInfo.publishUrl
-        if (publishUrl.isNotEmpty()) {
+        val publishUrl = publishInfo.getPublishUrl()
+        val publishUserName = publishInfo.getPublishUserName()
+        if (publishUrl.isNotEmpty() && publishUserName.isNotEmpty()) {
             publishing.repositories {
                 maven {
                     url =
-                        URI(publishInfo.publishUrl)
+                        URI(publishUrl)
                     credentials {
-                        username = publishInfo.publishUserName
+                        username = publishUserName
                         password =
-                            publishInfo.publishPassword
+                            publishInfo.getPublishPassword()
                     }
                 }
             }
