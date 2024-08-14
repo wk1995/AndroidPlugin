@@ -23,6 +23,7 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0")
         if (hasBasePlugin) {
             classpath("custom.android.plugin:baseBuild:latest.release")
+            classpath ("custom.android.plugin:monitor-slowMethod:0.0.4")
         }
     }
 }

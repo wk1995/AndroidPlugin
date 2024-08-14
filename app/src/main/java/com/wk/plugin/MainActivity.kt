@@ -1,19 +1,28 @@
 package com.wk.plugin
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import cn.entertech.affective.sdk.api.IAffectiveDataAnalysisService
-import cn.entertech.affective.sdk.bean.AffectiveServiceWay
+import android.view.View
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : AppCompatActivity() {
-    private val affectiveService by lazy {
-        IAffectiveDataAnalysisService.getService(AffectiveServiceWay.AffectiveLocalService)
-    }
+class MainActivity : AppCompatActivity(), View.OnClickListener {
+
+    private var btn: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Log.d("MainActivity", "affectiveService: ${affectiveService?.hasConnectAffectiveService()}")
+        btn = findViewById(R.id.btn)
+        btn?.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.btn->{
+                System.out.println("llll")
+                Log.d("wk","btn")
+            }
+        }
     }
 }
