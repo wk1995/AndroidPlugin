@@ -19,7 +19,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "MyPlugin"
 
-//本地是否插件
+//has base  plugin
 val hasBasePlugin: Boolean = true
 val map: HashMap<String, String> = HashMap(gradle.startParameter.projectProperties)
 map["hasBasePlugin"] = hasBasePlugin.toString()

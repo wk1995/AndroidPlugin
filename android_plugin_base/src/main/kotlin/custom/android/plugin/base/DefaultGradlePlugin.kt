@@ -5,11 +5,11 @@ import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import custom.android.plugin.base.dependency.DependencyType
 import custom.android.plugin.base.dependency.initDependencies
 import custom.android.plugin.log.PluginLogUtil
+import custom.android.plugin.push.PublishInfoExtension
 import custom.android.plugin.push.PublishOperate
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
-import org.gradle.api.plugins.PluginContainer
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
@@ -99,7 +99,11 @@ open class DefaultGradlePlugin : Plugin<Project> {
             //groovy sdk
             this.add(DependencyType.DEPENDENCY_TYPE_IMPLEMENTATION, localGroovy())
         }
-        PublishOperate.configPublish(project, ModuleType.PLUGIN)
+        PublishOperate.configPublish(project, ModuleType.PLUGIN, getPublishInfoExtension())
+    }
+
+    open fun getPublishInfoExtension(): Class<out PublishInfoExtension> {
+        return PublishInfoExtension::class.java
     }
 
 
@@ -134,7 +138,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
         project.dependencies {
             initDependencies()
         }
-        PublishOperate.configPublish(project, ModuleType.LIBRARY)
+        PublishOperate.configPublish(project, ModuleType.LIBRARY, getPublishInfoExtension())
     }
 
 }
