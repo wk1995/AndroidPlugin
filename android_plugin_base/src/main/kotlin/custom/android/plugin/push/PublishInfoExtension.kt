@@ -26,6 +26,26 @@ open class PublishInfoExtension() {
         this.implementationClass = implementationClass
     }
 
+    constructor(
+        groupId: String,
+        artifactId: String,
+        version: String,
+        pluginId: String,
+        implementationClass: String,
+        publishUrl: String,
+        publishUserName: String,
+        publishPassword: String
+    ) : this() {
+        this.groupId = groupId
+        this.artifactId = artifactId
+        this.version = version
+        this.pluginId = pluginId
+        this.implementationClass = implementationClass
+        this.publishUrl = publishUrl
+        this.publishUserName = publishUserName
+        this.publishPassword = publishPassword
+    }
+
 
     /**
      * 包名
@@ -46,16 +66,33 @@ open class PublishInfoExtension() {
 
     var implementationClass = ""
 
+    private var publishUrl: String = ""
+
+    private var publishUserName: String = ""
+    private var publishPassword: String = ""
 
     open fun getPublishUrl(): String {
-        return ""
+        return publishUrl
     }
 
     open fun getPublishUserName(): String {
-        return ""
+        return publishUserName
     }
 
     open fun getPublishPassword(): String {
-        return ""
+        return publishPassword
     }
+
+    open fun setPublishUrl(publishUrl: String) {
+        this.publishUrl = publishUrl
+    }
+
+    open fun setPublishUserName(publishUserName: String) {
+        this.publishUserName = publishUserName
+    }
+
+    open fun setPublishPassword(publishPassword: String) {
+        this.publishPassword = publishPassword
+    }
+
 }

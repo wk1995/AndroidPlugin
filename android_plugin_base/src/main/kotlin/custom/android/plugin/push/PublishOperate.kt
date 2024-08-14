@@ -121,6 +121,7 @@ object PublishOperate {
         }
         val publishUrl = publishInfo.getPublishUrl()
         val publishUserName = publishInfo.getPublishUserName()
+        PluginLogUtil.printlnDebugInScreen("$TAG publishUrl $publishUrl ")
         if (publishUrl.isNotEmpty() && publishUserName.isNotEmpty()) {
             publishing.repositories {
                 maven {
