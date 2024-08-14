@@ -29,7 +29,7 @@ publishing {
         create<MavenPublication>("customPlugin") {
             groupId = "custom.android.plugin"
             artifactId = "baseBuild"
-            version = "0.0.1"
+            version = "0.0.2"
             from(components["java"])
         }
     }
