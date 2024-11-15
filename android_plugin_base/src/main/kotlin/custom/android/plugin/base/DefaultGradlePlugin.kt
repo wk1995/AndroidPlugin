@@ -20,6 +20,10 @@ open class DefaultGradlePlugin : Plugin<Project> {
         setProjectConfig(target)
     }
 
+    private val mPublishOperate by lazy {
+        PublishOperate()
+    }
+
     private fun setProjectConfig(project: Project) {
         val container = project.plugins
         if (ProjectHelper.isApp(container)) {
@@ -99,7 +103,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
             //groovy sdk
             this.add(DependencyType.DEPENDENCY_TYPE_IMPLEMENTATION, localGroovy())
         }
-        PublishOperate.configPublish(project, ModuleType.PLUGIN, getPublishInfoExtension())
+        mPublishOperate.configPublish(project, ModuleType.PLUGIN, getPublishInfoExtension())
     }
 
     open fun getPublishInfoExtension(): Class<out PublishInfoExtension> {
@@ -138,7 +142,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
         project.dependencies {
             initDependencies()
         }
-        PublishOperate.configPublish(project, ModuleType.LIBRARY, getPublishInfoExtension())
+        mPublishOperate.configPublish(project, ModuleType.LIBRARY, getPublishInfoExtension())
     }
 
 }

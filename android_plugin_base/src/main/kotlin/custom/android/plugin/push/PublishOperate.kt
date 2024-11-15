@@ -13,10 +13,17 @@ import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.jvm.tasks.Jar
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import java.net.URI
+import java.util.Properties
 
 
-object PublishOperate {
-    private const val TAG = "PublishOperate"
+open class PublishOperate {
+    companion object {
+        private const val TAG = "PublishOperate"
+    }
+
+    private val properties by lazy {
+        Properties()// local.properties file in the root director
+    }
 
     fun <T : PublishInfoExtension> configPublish(project: Project, type: Int, clazz: Class<T>) {
         // use Gradle Maven plugins
@@ -43,8 +50,7 @@ object PublishOperate {
                                     // 插件ID
                                     id = publishInfo.pluginId
                                     // 插件的实现类
-                                    implementationClass =
-                                        publishInfo.implementationClass
+                                    implementationClass = publishInfo.implementationClass
                                 }
                             }
                             publishing(project, publishing, publishInfo, it)
@@ -71,12 +77,10 @@ object PublishOperate {
             if (currProjectName == displayName) {
                 PluginLogUtil.printlnDebugInScreen("$TAG $currProjectName start register ")
                 project.tasks.register(
-                    PublishLibraryLocalTask.TAG,
-                    PublishLibraryLocalTask::class.java
+                    PublishLibraryLocalTask.TAG, PublishLibraryLocalTask::class.java
                 )
                 project.tasks.register(
-                    PublishLibraryRemoteTask.TAG,
-                    PublishLibraryRemoteTask::class.java
+                    PublishLibraryRemoteTask.TAG, PublishLibraryRemoteTask::class.java
                 )
             }
         }
@@ -88,10 +92,11 @@ object PublishOperate {
         publishInfo: T,
         softwareComponent: SoftwareComponent
     ) {
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        PluginLogUtil.printlnDebugInScreen("properties: $properties")
         publishing.publications {
             create(
-                MAVEN_PUBLICATION_NAME,
-                MavenPublication::class.java
+                MAVEN_PUBLICATION_NAME, MavenPublication::class.java
             ) {
                 groupId = publishInfo.groupId
                 artifactId = publishInfo.artifactId
@@ -99,44 +104,62 @@ object PublishOperate {
                 if (version.endsWith("-debug")) {
                     val taskName = "androidSourcesJar"
                     //获取build.gradle中的android节点
-                    val androidSet =
-                        project.extensions.getByName("android") as LibraryExtension
+                    val androidSet = project.extensions.getByName("android") as LibraryExtension
                     val sourceSet = androidSet.sourceSets
                     //获取android节点下的源码目录
-                    val sourceSetFiles =
-                        sourceSet.findByName("main")?.java?.srcDirs
-                    val task =
-                        project.tasks.findByName(taskName)
-                            ?: project.tasks.create(
-                                taskName,
-                                Jar::class.java
-                            ) {
-                                from(sourceSetFiles)
-                                archiveClassifier.set("sources")
-                            }
+                    val sourceSetFiles = sourceSet.findByName("main")?.java?.srcDirs
+                    val task = project.tasks.findByName(taskName) ?: project.tasks.create(
+                        taskName, Jar::class.java
+                    ) {
+                        from(sourceSetFiles)
+                        archiveClassifier.set("sources")
+                    }
                     artifact(task)
                 }
                 from(softwareComponent)
             }
         }
-        val publishUrl = publishInfo.getPublishUrl()
-        val publishUserName = publishInfo.getPublishUserName()
-        PluginLogUtil.printlnDebugInScreen("$TAG publishUrl $publishUrl ")
-        if (publishUrl.isNotEmpty() && publishUserName.isNotEmpty()) {
+        var publishUrl = publishInfo.getPublishUrl()
+        if (publishUrl.isEmpty()) {
+            publishUrl = properties.getProperty("publishUrl", "")
+        }
+        var publishUserName = publishInfo.getPublishUserName()
+        if (publishUserName.isEmpty()) {
+            publishUserName = properties.getProperty("publishUserName", "")
+        }
+        var publishPassword = publishInfo.getPublishPassword()
+        if (publishPassword.isEmpty()) {
+            publishPassword = properties.getProperty("publishPassword", "")
+        }
+        PluginLogUtil.printlnDebugInScreen("$TAG publishUrl is $publishUrl")
+        PluginLogUtil.printlnDebugInScreen("$TAG publishUserName is $publishUserName  publishPassword is $publishPassword")
+        if (publishUrl.isEmpty()) {
+            publishUrl = getDefaultPublishUrl()
+        }
+        if (publishUserName.isEmpty()) {
+            publishUserName = getDefaultPublishUserName()
+        }
+        if (publishPassword.isEmpty()) {
+            publishPassword = getDefaultPublishPassword()
+        }
+        if (publishUrl.isNotEmpty()) {
             publishing.repositories {
                 maven {
-                    url =
-                        URI(publishUrl)
-                    credentials {
+                    url = URI(publishUrl)
+                    isAllowInsecureProtocol = true
+                    credentials { ->
                         username = publishUserName
-                        password =
-                            publishInfo.getPublishPassword()
+                        password = publishPassword
                     }
                 }
             }
-        } else {
-            PluginLogUtil.printlnErrorInScreen("$TAG publishUrl is null")
         }
     }
+
+    open fun getDefaultPublishUrl(): String = ""
+
+    open fun getDefaultPublishUserName(): String = ""
+
+    open fun getDefaultPublishPassword(): String = ""
 
 }
