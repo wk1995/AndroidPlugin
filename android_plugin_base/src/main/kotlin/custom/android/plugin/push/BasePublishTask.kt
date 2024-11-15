@@ -21,7 +21,7 @@ abstract class BasePublishTask : DefaultTask() {
 
     companion object {
         private const val TAG = "BasePublishTask"
-        const val MAVEN_PUBLICATION_NAME = "myRelease"
+        const val MAVEN_PUBLICATION_NAME = "EnterPublish"
     }
 
     init {
@@ -41,12 +41,14 @@ abstract class BasePublishTask : DefaultTask() {
         //2、把publisher上传到服务器端，做版本重复性校验
         checkStatus = checkPublishInfo(publishInfo)
         //如果前两步都校验通过了，checkStatus设置为true
-//        PluginLogUtil.printlnDebugInScreen("projectDir: ${project.projectDir.absolutePath}")
-//        PluginLogUtil.printlnDebugInScreen("rootDir: ${project.rootDir.absolutePath}")
-        val realTaskName =
-            project.projectDir.absolutePath
-                .removePrefix(project.rootDir.absolutePath)
-                .replace(File.separator, ":") + initPublishCommandLine()
+        val projectDirAbsolutePath = project.projectDir.absolutePath
+        val rootDirAbsolutePath = project.rootDir.absolutePath
+        PluginLogUtil.printlnDebugInScreen("project.name: ${project.name}")
+        PluginLogUtil.printlnDebugInScreen("projectDir: $projectDirAbsolutePath")
+        PluginLogUtil.printlnDebugInScreen("rootDir: $rootDirAbsolutePath")
+        val removeRootPath=projectDirAbsolutePath.removePrefix(rootDirAbsolutePath)
+        PluginLogUtil.printlnDebugInScreen("removeRootPath: $removeRootPath")
+        val realTaskName = ":${project.name}" + initPublishCommandLine()
 
         if (checkStatus) {
             val out = ByteArrayOutputStream()
@@ -75,7 +77,7 @@ abstract class BasePublishTask : DefaultTask() {
                 )
             }
             val result = out.toString()
-
+            PluginLogUtil.printlnDebugInScreen("result: $result")
             if (result.contains("UP-TO-DATE")) {
                 //上传maven仓库成功，上报到服务器
                 val isSuccess = requestUploadVersion()
