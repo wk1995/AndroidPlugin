@@ -34,7 +34,7 @@ abstract class BasePublishTask : DefaultTask() {
         executeTask()
     }
 
-    protected fun executeTask() {
+    private fun executeTask() {
         val publishInfo = project.extensions.getByType(PublishInfoExtension::class.java)
 
         //1、对publisher配置的信息进行基础校验
@@ -46,7 +46,7 @@ abstract class BasePublishTask : DefaultTask() {
         PluginLogUtil.printlnDebugInScreen("project.name: ${project.name}")
         PluginLogUtil.printlnDebugInScreen("projectDir: $projectDirAbsolutePath")
         PluginLogUtil.printlnDebugInScreen("rootDir: $rootDirAbsolutePath")
-        val removeRootPath=projectDirAbsolutePath.removePrefix(rootDirAbsolutePath)
+        val removeRootPath = projectDirAbsolutePath.removePrefix(rootDirAbsolutePath)
         PluginLogUtil.printlnDebugInScreen("removeRootPath: $removeRootPath")
         val realTaskName = ":${project.name}" + initPublishCommandLine()
 
@@ -70,10 +70,9 @@ abstract class BasePublishTask : DefaultTask() {
             PluginLogUtil.printlnDebugInScreen("$TAG path: $path realTaskName: $realTaskName")
             //通过命令行的方式进行调用上传maven的task
             project.exec {
-                this.standardOutput = out
-                this.setCommandLine(
-                    path,
-                    realTaskName
+                standardOutput = out
+                setCommandLine(
+                    path, realTaskName
                 )
             }
             val result = out.toString()
@@ -86,22 +85,21 @@ abstract class BasePublishTask : DefaultTask() {
                     var groupId = ""
                     var artifactId = ""
                     var version = ""
-
                     publishing.publications {
-                        val mavenPublication =
-                            getByName(MAVEN_PUBLICATION_NAME) as MavenPublication
+                        val mavenPublication = getByName(MAVEN_PUBLICATION_NAME) as MavenPublication
                         groupId = mavenPublication.groupId
                         artifactId = mavenPublication.artifactId
                         version = mavenPublication.version
+
                     }
                     publishing.repositories {
                         maven {
                             //url可能为null，虽然提示不会为null
-                            PluginLogUtil.printlnInfoInScreen("$name url: ${url?.toString()}")
+                            PluginLogUtil.printlnInfoInScreen("$name url: $url")
                         }
                     }
                     publishing.repositories.maven {
-                        PluginLogUtil.printlnInfoInScreen(" ${name} url: ${url?.toString()}")
+                        PluginLogUtil.printlnInfoInScreen(" $name url: $url")
                     }
                     val fileNames = groupId.split(".")
                     val pathSb = StringBuilder()
